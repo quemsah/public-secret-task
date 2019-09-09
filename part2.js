@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const fs = require('fs');
+const request = require('request');
 const key = fs.readFileSync("key");
 const secret = fs.readFileSync("secret");
 const ans = crypto.publicDecrypt(key, secret);
@@ -25,11 +26,30 @@ fs.writeFile("./answer", part2.toString(), (err) => {
 // Ваш ответ – это URL шифровки созданного сценария вида
 // https://raw.githubusercontent.com/GossJS/node_starters0/client_server/secret2
 
+const url = "https://raw.githubusercontent.com/quemsah/secret-task/master/answer"
+
 // Обратите внимание: это именно адрес сырого доступа к файлу (бинарному в том числе),
 // а не адрес страницы с веб-интерфейсом гитхаба
 
 // Полученный ответ методом POST отправьте на адрес 3336.kodaktor.ru/mystery?yourname
 //       с заголовком content-type: multipart/form-data
-// где yourname – это написанные латиницей ваши имя и фамилия, разделённые дефисом
+// где yourname – это написанные латиницей ваши имя и фамилия, разделённые дефисом]
+
+request({
+    url: "http://3336.kodaktor.ru/mystery?evgeny-pavlov",
+    method: "POST",
+    //json: true,   // <--Very important!!!
+    headers: {
+        "content-type": "multipart/form-data", // <--Very important!!!
+    },
+    body: url
+}, function (err, res, body) {
+    if (err) {
+        console.log('Error :', err)
+        return
+    }
+    console.log(' Res :', res)
+    console.log(' Body :', body)
+});
 
 // Ответ должен быть отправлен как чистое тело сообщения POST без параметров – только верный адрес.
